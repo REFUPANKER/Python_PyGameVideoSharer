@@ -2,5 +2,6 @@ venv
 venv/
 credential.json
 test.py
-ballbounce.mp4
 photo.jpg
+beep.wav
+ballbounce.mp4
