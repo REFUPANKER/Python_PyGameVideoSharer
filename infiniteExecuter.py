@@ -2,7 +2,7 @@ from datetime import datetime
 import time,index
 print("Infinite executer")
 stack=0
-sleepTime=5*60
+sleepTime=12*60*60
 while stack<5:
     stack+=1
     print(">>> EXECUTED : "+str(datetime.now().strftime("%H:%M:%S")))

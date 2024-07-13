@@ -1,7 +1,8 @@
 venv
 venv/
-credential.json
+.credential
 test.py
 photo.jpg
 beep.wav
 ballbounce.mp4
+*.mp4
