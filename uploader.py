@@ -3,15 +3,29 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
-import os
-import json
+from selenium.webdriver.chrome.options import Options
+import time,os,json
 
+
+def ClickToButton(driver, xpath):
+    button = driver.find_element(By.XPATH, xpath)
+    button.click()
+
+def ClickToButton(driver, until, xpath):
+    button = WebDriverWait(driver, until).until(
+        EC.presence_of_element_located((By.XPATH, xpath)))
+    button.click()
+
+
+def SendKeys(driver, until, keys, xpath):
+    button = WebDriverWait(driver, until).until(
+        EC.presence_of_element_located((By.XPATH, xpath)))
+    button.send_keys(keys)
 
 
 def Run():
     print("Uploader started")
-    
+
     # Instagram bilgilerinizi girin
     # uses credential.json
     with open(".credential", "r") as file:
@@ -28,15 +42,18 @@ def Run():
     caption = "test1" + str(content_size)
 
     # WebDriver'ı başlat
-    # Alternatif olarak, 'webdriver.Firefox()' kullanabilirsiniz
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    # #chrome_options.add_argument('--headless')
+    # chrome_options.add_argument('--no-sandbox')
+    # chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument("start-maximized")
+    driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://www.instagram.com/accounts/login/")
 
     # Giriş yapmayı bekleyin
     try:
         username_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "username"))
-        )
+            EC.presence_of_element_located((By.NAME, "username")))
         password_input = driver.find_element(By.NAME, "password")
 
         # Kullanıcı adı ve şifre girin
@@ -53,18 +70,12 @@ def Run():
 
     # Yeni gönderi oluşturmak için
     try:
-        new_post_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.CSS_SELECTOR, "svg[aria-label='Yeni Gönderi']"))
-        )
-        new_post_button.click()
+        ClickToButton(
+            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/div/div/div/div/div/div[4]/div/span/div/a")
         print("Yeni gönderi butonuna tıklandı...")
 
-        new_post_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/div/div/div/div/div[2]/div[7]/div/span/div/div/div/div[1]/a[1]/div[1]"))
-        )
-        new_post_button.click()
+        ClickToButton(
+            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/div/div/div/div/div/div[4]/div/span/div/div/div/div[1]/a[1]")
         print("Gönderi oluşturma butonuna tıklandı...")
     except Exception as e:
         print("Yeni gönderi butonu bulunamadı:", e)
@@ -73,39 +84,25 @@ def Run():
     # Görüntü yükleme
     try:
         print("Görüntü yükleniyor...")
-        upload_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[2]/div[1]/form/input"))
-        )
-        upload_input.send_keys(image_path)
+        SendKeys(driver, 10, image_path,
+                 "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[2]/div[1]/form/input")
         print("Görüntü yükleme başarılı.")
     except Exception as e:
         print("Görüntü yükleme başarısız:", e)
         driver.quit()
 
-    time.sleep(5)
+    time.sleep(content_uploadSize)
 
     # İleri butonuna basmak
     try:
-        try:
-            closePopUp_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[6]/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/div/div[4]")))
-            closePopUp_button.click()
-            print("Popup kapatma butonuna tıklandı.")
-        except Exception as e:
-            print(e)
-            
-        
-        next_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")))
-        next_button.click()
+        ClickToButton(
+            driver, 10, "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")
         print("İleri butonuna tıklandı.")
+
         time.sleep(2)  # Bir sonraki sayfanın yüklenmesi için bekleyin
-        next_button = driver.find_element(
-            By.XPATH, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div/div")
-        next_button.click()
+
+        ClickToButton(
+            driver, 10, "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")
         print("İleri butonuna tekrar tıklandı.")
     except Exception as e:
         print("İleri butonu bulunamadı:", e)
@@ -115,9 +112,8 @@ def Run():
 
     # Başlık eklemek ve paylaşmak
     try:
-        share_button = driver.find_element(
-            By.XPATH, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div/div")
-        share_button.click()
+        ClickToButton(
+            driver, "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")
         print("Gönderi paylaşma butonuna tıklandı.")
     except Exception as e:
         print("Gönderi paylaşma başarısız:", e)
@@ -128,24 +124,24 @@ def Run():
 
     # Çıkış yapma
     try:
-        try:
-            closePopUp_button = driver.find_element(
-                By.CSS_SELECTOR, "svg[aria-label='Kapat']")
-            closePopUp_button.click()
-            print("Popup kapatma butonuna tıklandı.")
-        except:
-            pass
+        ClickToButton(
+            driver, "/html/body/div[7]/div[1]/div/div[2]/div/div/svg")
+        print("Popup işlem gördü")
 
         time.sleep(3)
-        options_button = driver.find_element(
-            By.CSS_SELECTOR, "svg[aria-label='Ayarlar']")
-        options_button.click()
+        ClickToButton(driver,
+                      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/div/div/div/div/div/div[6]/div/span/div/a")
+        print("Profil butonuna tıklandı.")
+        time.sleep(3)
+
+        ClickToButton(
+            driver, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[2]/section/main/div/header/section[2]/div/div[1]/div[2]/div/div/svg")
         print("Ayarlar butonuna tıklandı.")
 
         time.sleep(3)
-        logout_button = driver.find_element(
-            By.XPATH, "/html/body/div[2]/div/div/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/div[6]/div[1]")
-        logout_button.click()
+
+        ClickToButton(driver,
+                      "/html/body/div[7]/div[1]/div/div[2]/div/div/div/div/div/button[8]")
         print("Çıkış butonuna tıklandı.")
     except Exception as e:
         print("Çıkış yapma başarısız:", e)
@@ -157,5 +153,6 @@ def Run():
 
     print("Upload tamamlandı")
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     Run()
