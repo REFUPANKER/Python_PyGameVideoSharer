@@ -130,3 +130,6 @@ def Run():
     clip = ImageSequenceClip(frames, fps=60)
     clip.write_videofile("ballbounce.mp4", codec="libx264")
     print("Game ended")
+
+if __name__=="__main__":
+    Run()

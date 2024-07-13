@@ -14,7 +14,7 @@ def Run():
     
     # Instagram bilgilerinizi girin
     # uses credential.json
-    with open("credential.json", "r") as file:
+    with open(".credential", "r") as file:
         credential = json.load(file)
         """
         {"email":"","password":""}
@@ -156,3 +156,6 @@ def Run():
     driver.quit()
 
     print("Upload tamamlandı")
+
+if __name__=="__main__":
+    Run()
