@@ -4,12 +4,15 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-import time,os,json
+import time
+import os
+import json
 
 
-def ClickToButton(driver, xpath):
+def ClickToButtonNow(driver, xpath):
     button = driver.find_element(By.XPATH, xpath)
     button.click()
+
 
 def ClickToButton(driver, until, xpath):
     button = WebDriverWait(driver, until).until(
@@ -17,10 +20,10 @@ def ClickToButton(driver, until, xpath):
     button.click()
 
 
-def SendKeys(driver, until, keys, xpath):
+def SendKeys(driver, until, sendkeys, xpath):
     button = WebDriverWait(driver, until).until(
         EC.presence_of_element_located((By.XPATH, xpath)))
-    button.send_keys(keys)
+    button.send_keys(sendkeys)
 
 
 def Run():
@@ -46,7 +49,9 @@ def Run():
     # #chrome_options.add_argument('--headless')
     # chrome_options.add_argument('--no-sandbox')
     # chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_argument("start-maximized")
+    # chrome_options.add_argument("start-maximized")
+    chrome_options.add_argument("--window-size=650,650")
+
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://www.instagram.com/accounts/login/")
 
@@ -71,11 +76,11 @@ def Run():
     # Yeni gönderi oluşturmak için
     try:
         ClickToButton(
-            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/div/div/div/div/div/div[4]/div/span/div/a")
+            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/div/div/div/div/div/div[4]/div/span/div/a/div")
         print("Yeni gönderi butonuna tıklandı...")
 
         ClickToButton(
-            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/div/div/div/div/div/div[4]/div/span/div/div/div/div[1]/a[1]")
+            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/div/div/div/div/div/div[4]/div/span/div/div/div/div[1]/a[1]/div[1]")
         print("Gönderi oluşturma butonuna tıklandı...")
     except Exception as e:
         print("Yeni gönderi butonu bulunamadı:", e)
@@ -84,8 +89,9 @@ def Run():
     # Görüntü yükleme
     try:
         print("Görüntü yükleniyor...")
-        SendKeys(driver, 10, image_path,
-                 "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[2]/div[1]/form/input")
+        SendKeys(driver, 10,
+                 image_path,
+                 "//input[@type='file']")
         print("Görüntü yükleme başarılı.")
     except Exception as e:
         print("Görüntü yükleme başarısız:", e)
@@ -93,27 +99,34 @@ def Run():
 
     time.sleep(content_uploadSize)
 
-    # İleri butonuna basmak
     try:
         ClickToButton(
-            driver, 10, "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")
+            driver, 10, "/html/body/div[6]/div[2]/div/div/div[1]/div/div[2]/div/div/div/div/div[2]/div/div/div[3]/div/div[4]/button")
+        print("Popup işlem gördü.")
+    except:
+        pass
+    # İleri butonuna basmak
+    try:
+        nextButton = "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div/div"
+        ClickToButton(
+            driver, 10, nextButton)
         print("İleri butonuna tıklandı.")
 
-        time.sleep(2)  # Bir sonraki sayfanın yüklenmesi için bekleyin
+        # time.sleep(5)  # Bir sonraki sayfanın yüklenmesi için bekleyin
 
         ClickToButton(
-            driver, 10, "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")
+            driver, 15, nextButton)
         print("İleri butonuna tekrar tıklandı.")
     except Exception as e:
         print("İleri butonu bulunamadı:", e)
         driver.quit()
 
-    time.sleep(2)
+    # time.sleep(5)
 
     # Başlık eklemek ve paylaşmak
     try:
         ClickToButton(
-            driver, "/html/body/div[7]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div")
+            driver, 15, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div/div")
         print("Gönderi paylaşma butonuna tıklandı.")
     except Exception as e:
         print("Gönderi paylaşma başarısız:", e)
@@ -124,23 +137,24 @@ def Run():
 
     # Çıkış yapma
     try:
-        ClickToButton(
-            driver, "/html/body/div[7]/div[1]/div/div[2]/div/div/svg")
+        ClickToButtonNow(
+            driver, "/html/body/div[6]/div[1]/div/div[2]/div")
         print("Popup işlem gördü")
 
-        time.sleep(3)
-        ClickToButton(driver,
-                      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/div/div/div/div/div/div[6]/div/span/div/a")
+        # time.sleep(3)
+        ClickToButton(driver, 10,
+                      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[1]/div[1]/div/div/div/div/div/div[6]/div/span/div/a")
         print("Profil butonuna tıklandı.")
-        time.sleep(3)
+
+        # time.sleep(3)
 
         ClickToButton(
-            driver, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[2]/section/main/div/header/section[2]/div/div[1]/div[2]/div/div/svg")
+            driver, 10, "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[2]/section/main/div/header/section[2]/div/div[1]/div[2]/div")
         print("Ayarlar butonuna tıklandı.")
 
-        time.sleep(3)
+        # time.sleep(3)
 
-        ClickToButton(driver,
+        ClickToButton(driver, 15,
                       "/html/body/div[7]/div[1]/div/div[2]/div/div/div/div/div/button[8]")
         print("Çıkış butonuna tıklandı.")
     except Exception as e:
