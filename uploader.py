@@ -48,14 +48,14 @@ def Run():
     chrome_options = Options()
     # #chrome_options.add_argument('--headless')
     # chrome_options.add_argument("start-maximized")
-    
-    #uncomment this 2 lines below
+
+    # uncomment this 2 lines below
     # chrome_options.add_argument('--no-sandbox')
     # chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument("--window-size=650,650")
 
     driver = webdriver.Chrome(options=chrome_options)
-    driver.get("https://www.instagram.com/")
+    driver.get("https://www.instagram.com/accounts/login")
 
     # Giriş yapmayı bekleyin
     try:
@@ -127,6 +127,17 @@ def Run():
 
     # Başlık eklemek ve paylaşmak
     try:
+        SendKeys(driver, 10,
+                 """its damn problem! here is the info about big planes...
+#software #python #pygame #fyp #instagram #game #adhd
+#explore #colors #rgb #gaming #gamer #aldous #alruad
+#nerd #donkey
+why are you still reading ? """,
+                 "//div[@role='textbox']")
+        print("Gönderi açıklaması yazıldı")
+        
+        time.sleep(3)
+        
         ClickToButton(
             driver, 15, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div/div")
         print("Gönderi paylaşma butonuna tıklandı.")
