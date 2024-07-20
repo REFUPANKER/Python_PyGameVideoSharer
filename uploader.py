@@ -39,10 +39,20 @@ def Run():
     username = credential["email"]
     password = credential["password"]
 
+    # get account info from environment 
+    #username = os.environ["email"]
+    #password = os.environ["password"]
+
+
     image_path = os.path.abspath("ballbounce.mp4")
     content_size = os.path.getsize(image_path)
     content_uploadSize = int(content_size / (1024 * 1024)) + 1
-    caption = "test1" + str(content_size)
+    # multiline description > [!] includes pre-spaces
+    post_description = """its damn problem! here is the info about big planes...
+#software #python #pygame #fyp #instagram #game #adhd
+#explore #colors #rgb #gaming #gamer #aldous #alruad
+#nerd #donkey #daily
+why are you still reading ? """
 
     # WebDriver'ı başlat
     chrome_options = Options()
@@ -91,9 +101,7 @@ def Run():
     # Görüntü yükleme
     try:
         print("Görüntü yükleniyor...")
-        SendKeys(driver, 10,
-                 image_path,
-                 "//input[@type='file']")
+        SendKeys(driver, 10, image_path, "//input[@type='file']")
         print("Görüntü yükleme başarılı.")
     except Exception as e:
         print("Görüntü yükleme başarısız:", e)
@@ -127,17 +135,11 @@ def Run():
 
     # Başlık eklemek ve paylaşmak
     try:
-        SendKeys(driver, 10,
-                 """its damn problem! here is the info about big planes...
-#software #python #pygame #fyp #instagram #game #adhd
-#explore #colors #rgb #gaming #gamer #aldous #alruad
-#nerd #donkey
-why are you still reading ? """,
-                 "//div[@role='textbox']")
+        SendKeys(driver, 10, post_description, "//div[@role='textbox']")
         print("Gönderi açıklaması yazıldı")
-        
+
         time.sleep(3)
-        
+
         ClickToButton(
             driver, 15, "/html/body/div[6]/div[1]/div/div[3]/div/div/div/div/div/div/div/div[1]/div/div/div/div[3]/div/div")
         print("Gönderi paylaşma butonuna tıklandı.")

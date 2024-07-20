@@ -27,11 +27,7 @@ def Run():
     # Yazı tipi ayarları
     font = pygame.font.Font(None, 36)  # Varsayılan yazı tipi ve boyut
 
-    # Ses efektleri yükleme
-    collision_sounds = []  # Çarpışma sesleri için liste
-    for _ in range(5):  # Örnek olarak 5 farklı ses efekti yükleyelim
-        collision_sound = pygame.mixer.Sound("beep.wav")
-        collision_sounds.append(collision_sound)
+    
 
     # Oyun durumu
     running = True
@@ -73,16 +69,12 @@ def Run():
             bounces += 1
             bounceLabelColor = (random.randint(45, 255), random.randint(
                 45, 255), random.randint(45, 255))
-            # Rastgele bir ses efekti çal
-            random.choice(collision_sounds).play()
 
         if ball_pos[1] <= ball_radius or ball_pos[1] >= height - ball_radius:
             ball_speed[1] = -ball_speed[1]
             bounces += 1
             bounceLabelColor = (random.randint(45, 255), random.randint(
                 45, 255), random.randint(45, 255))
-            # Rastgele bir ses efekti çal
-            random.choice(collision_sounds).play()
 
         # Ekranı siyah ile doldur
         screen.fill(black)
